@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="build/bscroll.js"></script>
+        <script>
+        	document.addEventListener('touchstart', function (ev){
+        		ev.preventDefault()
+        	})
+        </script>
+        <style>
+        	html,body {
+        		margin: 0;
+        		width: 100%;
+        		height: 100%;
+        		overflow: hidden;
+        		position: relative;
+        	}
+        	#head {
+        		position: relative;
+        		top: 100px;
+        		width: 100%;
+        		height: 100px;
+        		background:grey;
+        	}
+        	#top {
+        		position: absolute;
+        		left: 0;
+        		top: 0;
+        		height: 100px;
+        		width: 100%;
+        		background: greenyellow;
+        	}
+        	#rap {
+        		position: absolute;
+        		width: 100%;
+        		height: 100%;
+        	}
+        	#inner {
+        		z-index: 1;
+        		position: absolute;
+        		left:0;
+        		right: 0;
+        		top: 200px;
+        		bottom: 0;
+        		/*overflow: hidden;*/
+        	}
+        	#minor {
+        		position: absolute;
+        		left:0;
+        		right: 0;
+        		top: 0;
+        		bottom: -100px;
+        		background: green;
+        	}
+        	#left {
+        		float: left;
+        		width: 20%;
+        		height: 800px;
+        		background: red;
+        	}
+        	#right {
+        		float: left;
+        		width: 80%;
+        		height: 800px;
+        		background: blue;
+        		overflow: hidden;
+        	}
+        </style>
+    </head>
+    <body>
+    <body>
+    	
+        <div id="#wrapper">
+        	
+        	<div id="rap">
+        		
+	            <div id="inner">
+	            	<div id="minor">
+	            		<div id="left"></div>
+	            		<div id="right">
+	            			<ul id="rightInner">
+	            				<li>这是文字文字</li>
+	            			</ul>
+	            		</div>
+	            	</div>
+	            </div>
+	            <div id="head">
+        		
+        		</div>
+        		<div id="top">
+        			
+	        	</div>
+        	</div>
+        </div>
+        <button id="btn1">这是啥</button>
+        <script type="text/javascript">
+            var scroll = new BScroll(document.getElementById('inner'),{
+            	probeType: 3,
+            	bounce: false
+            });
+//          scroll.disable()
+//			scroll.next()
+            function createLis (){
+            	var str = "";
+            	for(var i=0;i<100;i++){
+            		str += "<li>这是"+ i +"文字文字</li>"
+            	}
+            	rightInner.innerHTML = str;
+            	
+            }
+            createLis()
+            var scroll2 = new BScroll(document.getElementById('right'),{
+            	probeType: 3
+            });
+            var dest;
+            console.log(scroll)
+            scroll.on('scroll', function(pos){
+            	if(scroll.y > -100){
+            		scroll2.disable()
+            	}else if(scroll.y === -100) {
+            		dispatch(rightInner, "touchend")
+            		scroll2.enable()
+            	}
+            })
+            scroll.on('scrollStart', function(){
+            })
+            scroll2.on('scrollStart', function(){
+            })
+            scroll.on('scrollEnd', function(){
+            	console.log('结束了')
+            	scroll2.scrollTo(0, 100)
+            })
+			function dispatch(el, type){    
+			 try{    
+			        var evt = document.createEvent('Event');    
+			        evt.initEvent(type,true,true);    
+			        el.dispatchEvent(evt);    
+			  }catch(e){
+			       alert(e);
+			  };    
+			}
+        </script>
+        </body>
+    </body>
+</html>
