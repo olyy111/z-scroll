@@ -1945,7 +1945,7 @@ function initCities() {
 
   cities.innerHTML = cityHtml;
 
-  scroll = new window.BScroll(cityWrapper, {
+  scroll = new window.ZScroll(cityWrapper, {
     probeType: 2
   });
 

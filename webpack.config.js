@@ -6,8 +6,8 @@ module.exports = {
 	entry: './src/index',
 	output: {
 		path: path.resolve(__dirname, 'build'),
-		filename: 'bscroll.js',
-		library: 'BScroll',
+		filename: 'zscroll.js',
+		library: 'ZScroll',
 		libraryTarget: 'umd',
 		publicPath: '/assets/'
 	},

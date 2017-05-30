@@ -4,9 +4,9 @@
 	else if(typeof define === 'function' && define.amd)
 		define([], factory);
 	else if(typeof exports === 'object')
-		exports["BScroll"] = factory();
+		exports["ZScroll"] = factory();
 	else
-		root["BScroll"] = factory();
+		root["ZScroll"] = factory();
 })(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -56,11 +56,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var _bscroll = __webpack_require__(1);
+	var _zscroll = __webpack_require__(1);
 
-	_bscroll.BScroll.Version = ("0.1.15");
+	_zscroll.ZScroll.Version = ("0.1.0");
 
-	module.exports = _bscroll.BScroll;
+	module.exports = _zscroll.ZScroll;
 
 /***/ }),
 /* 1 */
@@ -71,7 +71,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.BScroll = undefined;
+	exports.ZScroll = undefined;
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -85,13 +85,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var TOUCH_EVENT = 1;
 
-	var BScroll = exports.BScroll = function (_EventEmitter) {
-	  _inherits(BScroll, _EventEmitter);
+	var ZScroll = exports.ZScroll = function (_EventEmitter) {
+	  _inherits(ZScroll, _EventEmitter);
 
-	  function BScroll(el, options) {
-	    _classCallCheck(this, BScroll);
+	  function ZScroll(el, options) {
+	    _classCallCheck(this, ZScroll);
 
-	    var _this = _possibleConstructorReturn(this, (BScroll.__proto__ || Object.getPrototypeOf(BScroll)).call(this));
+	    var _this = _possibleConstructorReturn(this, (ZScroll.__proto__ || Object.getPrototypeOf(ZScroll)).call(this));
 
 	    _this.wrapper = typeof el === 'string' ? document.querySelector(el) : el;
 	    _this.scroller = _this.wrapper.children[0];
@@ -164,13 +164,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return _this;
 	  }
 
-	  _createClass(BScroll, [{
+	  _createClass(ZScroll, [{
 	    key: '_init',
 	    value: function _init() {
 	      this.x = 0;
 	      this.y = 0;
 	      this.directionX = 0;
 	      this.directionY = 0;
+	      this.isDropRefresh = false;
 
 	      this._addEvents();
 	    }
@@ -456,7 +457,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (this.options.wheel) {
 	          this.target = this.items[Math.round(-pos.y / this.itemHeight)];
 	        } else {
-	          this.trigger('scrollEnd');
+	          this.trigger('scrollEnd', {
+	            x: this.x,
+	            y: this.y
+	          });
 	        }
 	      }
 
@@ -557,7 +561,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.moved = true;
 	        this.trigger('scrollStart');
 	      }
-
 	      this._translate(newX, newY);
 
 	      if (timestamp - this.startTime > this.options.momentumLimitTime) {
@@ -601,13 +604,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (this.options.preventDefault && !(0, _util.preventDefaultException)(e.target, this.options.preventDefaultException)) {
 	        e.preventDefault();
 	      }
-
 	      this.trigger('touchend', {
 	        x: this.x,
 	        y: this.y
 	      });
 
-	      if (this.resetPosition(this.options.bounceTime, _util.ease.bounce)) {
+	      if (this.isDropRefresh && this.resetPosition(this.options.bounceTime, _util.ease.bounce)) {
+	        this.trigger('scrollEnd', {
+	          x: this.x,
+	          y: this.y
+	        });
 	        return;
 	      }
 	      this.isInTransition = false;
@@ -635,7 +641,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.trigger('scrollCancel');
 	        return;
 	      }
-
 	      this.scrollTo(newX, newY);
 
 	      this.endTime = +new Date();
@@ -648,7 +653,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.trigger('flick');
 	        return;
 	      }
-
 	      var time = 0;
 
 	      if (this.options.momentum && duration < this.options.momentumLimitTime && (absDistY > this.options.momentumLimitDistance || absDistX > this.options.momentumLimitDistance)) {
@@ -664,7 +668,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          time = this.options.adjustTime;
 	        }
 	      }
-
 	      var easing = _util.ease.swipe;
 	      if (this.options.snap) {
 	        var snap = this._nearestSnap(newX, newY);
@@ -677,19 +680,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.directionY = 0;
 	        easing = _util.ease.bounce;
 	      }
-
 	      if (newX !== this.x || newY !== this.y) {
+	        this.trigger('scrollEnd', {
+	          x: this.x,
+	          y: this.y
+	        });
+
 	        if (newX > 0 || newX < this.maxScrollX || newY > 0 || newY < this.maxScrollY) {
 	          easing = _util.ease.swipeBounce;
 	        }
-	        this.scrollTo(newX, newY, time, easing);
+	        !this.isDropRefresh && this.scrollTo(newX, newY, time, easing);
 	        return;
 	      }
 
 	      if (this.options.wheel) {
 	        this.selectedIndex = Math.abs(this.y / this.itemHeight) | 0;
 	      }
-	      this.trigger('scrollEnd');
+	      this.trigger('scrollEnd', {
+	        x: this.x,
+	        y: this.y
+	      });
 	    }
 	  }, {
 	    key: '_resize',
@@ -729,16 +739,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var time = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 
 	      this.scrollerStyle[_util.style.transitionDuration] = time + 'ms';
-
 	      if (this.options.wheel && !_util.isBadAndroid) {
 	        for (var i = 0; i < this.items.length; i++) {
 	          this.items[i].style[_util.style.transitionDuration] = time + 'ms';
 	        }
 	      }
-
 	      if (!time && _util.isBadAndroid) {
 	        this.scrollerStyle[_util.style.transitionDuration] = '0.001s';
-
 	        (0, _util.requestAnimationFrame)(function () {
 	          if (_this4.scrollerStyle[_util.style.transitionDuration] === '0.0001ms') {
 	            _this4.scrollerStyle[_util.style.transitionDuration] = '0s';
@@ -750,7 +757,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: '_transitionTimingFunction',
 	    value: function _transitionTimingFunction(easing) {
 	      this.scrollerStyle[_util.style.transitionTimingFunction] = easing;
-
 	      if (this.options.wheel && !_util.isBadAndroid) {
 	        for (var i = 0; i < this.items.length; i++) {
 	          this.items[i].style[_util.style.transitionTimingFunction] = easing;
@@ -758,16 +764,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 	  }, {
+	    key: 'setDropFlag',
+	    value: function setDropFlag(bl) {
+	      this.isDropRefresh = bl;
+	    }
+	  }, {
 	    key: '_transitionEnd',
 	    value: function _transitionEnd(e) {
 	      if (e.target !== this.scroller || !this.isInTransition) {
 	        return;
 	      }
-
 	      this._transitionTime();
+	      if (this.isDropRefresh) {
+	        return;
+	      }
 	      if (!this.resetPosition(this.options.bounceTime, _util.ease.bounce)) {
 	        this.isInTransition = false;
-	        this.trigger('scrollEnd');
+	        this.trigger('swipeEnd');
 	      }
 	    }
 	  }, {
@@ -845,7 +858,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.wrapperOffset = (0, _util.offset)(this.wrapper);
 
 	      this.trigger('refresh');
-
 	      this.resetPosition();
 	    }
 	  }, {
@@ -854,6 +866,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var time = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 	      var easeing = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _util.ease.bounce;
 
+	      console.log('reset');
 	      var x = this.x;
 	      if (!this.hasHorizontalScroll || x > 0) {
 	        x = 0;
@@ -871,7 +884,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (x === this.x && y === this.y) {
 	        return false;
 	      }
-
 	      this.scrollTo(x, y, time, easeing);
 
 	      return true;
@@ -900,17 +912,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function scrollTo(x, y, time) {
 	      var easing = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : _util.ease.bounce;
 
+	      console.log('bug');
 	      this.isInTransition = this.options.useTransition && time > 0 && (x !== this.x || y !== this.y);
-
 	      if (!time || this.options.useTransition) {
 	        this._transitionTimingFunction(easing.style);
 	        this._transitionTime(time);
 	        this._translate(x, y);
-
 	        if (time && this.options.probeType === 3) {
 	          this._startProbe();
 	        }
-
 	        if (this.options.wheel) {
 	          if (y > 0) {
 	            this.selectedIndex = 0;
@@ -943,7 +953,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (this.options.wheel && el.className !== 'wheel-item') {
 	        return;
 	      }
-
 	      var pos = (0, _util.offset)(el);
 	      pos.left -= this.wrapperOffset.left;
 	      pos.top -= this.wrapperOffset.top;
@@ -965,7 +974,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      time = time === undefined || time === null || time === 'auto' ? Math.max(Math.abs(this.x - pos.left), Math.abs(this.y - pos.top)) : time;
-
 	      this.scrollTo(pos.left, pos.top, time, easing);
 	    }
 	  }, {
@@ -1093,7 +1101,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }]);
 
-	  return BScroll;
+	  return ZScroll;
 	}(_util.EventEmitter);
 
 	;

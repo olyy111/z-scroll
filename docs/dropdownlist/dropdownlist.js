@@ -32,7 +32,7 @@ function initData() {
 }
 
 function initScroll() {
-  var scroll = new window.BScroll(listWrapper, {
+  var scroll = new window.ZBScroll(listWrapper, {
     probeType: 1
   });
   scroll.on('touchend', function (pos) {

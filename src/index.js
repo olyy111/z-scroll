@@ -1,6 +1,6 @@
-import {BScroll} from './bscroll/bscroll';
+import {ZScroll} from './zscroll/zscroll';
 
 /* eslint-disable no-undef */
-BScroll.Version = __VERSION__;
+ZScroll.Version = __VERSION__;
 
-module.exports = BScroll;
+module.exports = ZScroll;

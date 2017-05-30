@@ -24,7 +24,7 @@ import {
 
 const TOUCH_EVENT = 1;
 
-export class BScroll extends EventEmitter {
+export class ZScroll extends EventEmitter {
   constructor(el, options) {
     super();
     this.wrapper = typeof el === 'string' ? document.querySelector(el) : el;

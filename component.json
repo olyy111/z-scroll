@@ -1,6 +1,6 @@
 {
-  "name": "better-scroll",
+  "name": "z-scroll",
   "version": "0.1.0",
   "main": "build/bscroll.js",
-  "description": "inspired by iscroll, and it has a better scroll perfermance"
+  "description": "inspired by better-scroll, and it has some useful modification"
 }
