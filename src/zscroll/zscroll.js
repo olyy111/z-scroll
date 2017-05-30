@@ -547,7 +547,7 @@ export class ZScroll extends EventEmitter {
     });
 
     // reset if we are outside of the boundaries
-    if (this.isDropRefresh && this.resetPosition(this.options.bounceTime, ease.bounce)) {
+    if (!this.isDropRefresh && this.resetPosition(this.options.bounceTime, ease.bounce)) {
       this.trigger('scrollEnd', {
         x: this.x,
         y: this.y
@@ -790,7 +790,6 @@ export class ZScroll extends EventEmitter {
   }
 
   resetPosition(time = 0, easeing = ease.bounce) {
-    console.log('reset');
     let x = this.x;
     if (!this.hasHorizontalScroll || x > 0) {
       x = 0;
@@ -828,7 +827,6 @@ export class ZScroll extends EventEmitter {
   }
 
   scrollTo(x, y, time, easing = ease.bounce) {
-    console.log('bug');
     this.isInTransition = this.options.useTransition && time > 0 && (x !== this.x || y !== this.y);
     if (!time || this.options.useTransition) {
       this._transitionTimingFunction(easing.style);

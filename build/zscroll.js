@@ -58,7 +58,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _zscroll = __webpack_require__(1);
 
-	_zscroll.ZScroll.Version = ("0.1.0");
+	_zscroll.ZScroll.Version = ("0.1.1");
 
 	module.exports = _zscroll.ZScroll;
 
@@ -609,7 +609,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        y: this.y
 	      });
 
-	      if (this.isDropRefresh && this.resetPosition(this.options.bounceTime, _util.ease.bounce)) {
+	      if (!this.isDropRefresh && this.resetPosition(this.options.bounceTime, _util.ease.bounce)) {
 	        this.trigger('scrollEnd', {
 	          x: this.x,
 	          y: this.y
@@ -866,7 +866,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var time = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 	      var easeing = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _util.ease.bounce;
 
-	      console.log('reset');
 	      var x = this.x;
 	      if (!this.hasHorizontalScroll || x > 0) {
 	        x = 0;
@@ -912,7 +911,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function scrollTo(x, y, time) {
 	      var easing = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : _util.ease.bounce;
 
-	      console.log('bug');
 	      this.isInTransition = this.options.useTransition && time > 0 && (x !== this.x || y !== this.y);
 	      if (!time || this.options.useTransition) {
 	        this._transitionTimingFunction(easing.style);

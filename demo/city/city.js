@@ -1953,10 +1953,11 @@ function initCities() {
   });
 
   scroll.scrollTo(0, 0);
-  scroll.on('scrollEnd', (pos) => {
-    
+  scroll.on('touchend', (pos) => {
+    console.log(1111)
     if(pos.y > 30){
       scroll.setDropFlag(true)
+      console.log(scroll.isDropRefresh)
       scroll.scrollTo(0, 30, 100)
       
       setTimeout(function () {
