@@ -58,7 +58,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _zscroll = __webpack_require__(1);
 
-	_zscroll.ZScroll.Version = ("0.1.1");
+	_zscroll.ZScroll.Version = ("0.1.2");
 
 	module.exports = _zscroll.ZScroll;
 

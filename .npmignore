@@ -1,0 +1,12 @@
+demo/
+docs/
+src/
+.babelrc
+.editorconfig
+.eslintrc.js
+.gitignore
+.project
+component.json
+LICENSE
+test.html
+webpack
